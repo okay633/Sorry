@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>I'm Sorry</title>
+    <style>
+        body {
+            font-family: 'Courier New', Courier, monospace;
+            background: url('https://example.com/background.jpg') no-repeat center center fixed;
+            background-size: cover;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+        .envelope {
+            position: relative;
+            width: 300px;
+            height: 200px;
+            background: #f5f5f5;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            cursor: pointer;
+        }
+        .envelope::before, .envelope::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: #fff;
+            transform-origin: bottom;
+            transition: transform 0.5s ease;
+        }
+        .envelope::before {
+            top: 0;
+            left: 0;
+            border-bottom: 50px solid #e74c3c;
+            border-left: 150px solid transparent;
+            border-right: 150px solid transparent;
+            transform: rotateX(0deg);
+        }
+        .envelope::after {
+            bottom: 0;
+            left: 0;
+            border-top: 50px solid #e74c3c;
+            border-left: 150px solid transparent;
+            border-right: 150px solid transparent;
+            transform: rotateX(0deg);
+        }
+        .envelope:hover::before {
+            transform: rotateX(-180deg);
+        }
+        .envelope:hover::after {
+            transform: rotateX(180deg);
+        }
+        .heart {
+            display: inline-block;
+            width: 60px;
+            aspect-ratio: 1;
+            border-image: radial-gradient(red 69%, #0000 70%) 84.5%/50%;
+            clip-path: polygon(-41% 0, 50% 91%, 141% 0);
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            cursor: pointer;
+        }
+        .message {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #fff;
+            border-radius: 10px;
+            padding: 20px;
+            box-sizing: border-box;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-20px);
+            transition: opacity 0.9s ease, transform 0.9s ease, visibility 0.9s;
+            overflow-y: auto;
+        }
+        .message.visible {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+        h1 {
+            color: #e74c3c;
+            font-size: 36px;
+            margin-bottom: 20px;
+            font-family: 'Brush Script MT', cursive;
+        }
+        p {
+            font-size: 18px;
+            line-height: 1.6;
+            font-family: 'Brush Script MT', cursive;
+        }
+        .quote {
+            font-style: italic;
+            color: #555;
+            margin-top: 30px;
+        }
+        .footer {
+            margin-top: 40px;
+            font-size: 14px;
+            color: #888;
+        }
+    </style>
+</head>
+<body>
+    <div class="envelope" onclick="showMessage()">
+        <div class="heart"></div>
+        <div class="message" id="message">
+            <h1>I'm Sorry</h1>
+            <p>Dear Nate</p>
+            <p>Words cannot express how deeply sorry I am for making you cry. My actions were thoughtless and have caused you pain, which is the last thing I ever wanted to do. You mean the world to me, and it breaks my heart to see you hurt.</p>
+            <p>I've spent a lot of time reflecting on what happened, and I realize how much I've hurt you. I know that apologies can't undo the past, but I want you to know that I am committed to making things right. I am willing to do whatever it takes to earn your forgiveness and rebuild your trust.</p>
+            <p>Our relationship means everything to me, and I cherish every moment we spend together. Your smile, your laughter, and your love are the best parts of my life. I promise to be more understanding, more supportive, and more loving. Please, give me a chance to show you how much I care and how much you mean to me.</p>
+            <p>If you're willing, I would love to talk and work through this together. I believe in us, and I hope you do too.</p>
+            <p>With my love,</p>
+            <p>Zed</p>
+            <div class="quote">
+                <p>"The best relationships are the ones where you never give up on each other." - Unknown</p>
+            </div>
+            <div class="footer">
+                <p>Every day is a new opportunity to make things better.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showMessage() {
+            document.getElementById('message').classList.add('visible');
+        }
+    </script>
+</body>
+</html>
