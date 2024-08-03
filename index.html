@@ -3,142 +3,387 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>I'm Sorry</title>
+    <title>Attendance Tracker</title>
     <style>
         body {
-            font-family: 'Courier New', Courier, monospace;
-            background: url('https://example.com/background.jpg') no-repeat center center fixed;
-            background-size: cover;
+            font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
             display: flex;
             justify-content: center;
             align-items: center;
+            flex-direction: column;
             height: 100vh;
+            background: linear-gradient(45deg, #2c3e50, #34495e, #4a6a73);
+            background-size: 300% 300%;
+            animation: gradient 10s ease infinite;
             overflow: hidden;
         }
-        .envelope {
-            position: relative;
-            width: 300px;
-            height: 200px;
-            background: #f5f5f5;
-            border-radius: 10px;
-            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
-            overflow: hidden;
-            cursor: pointer;
+
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
-        .envelope::before, .envelope::after {
-            content: '';
+
+        .background-blur {
             position: absolute;
             width: 100%;
             height: 100%;
-            background: #fff;
-            transform-origin: bottom;
-            transition: transform 0.5s ease;
+            backdrop-filter: blur(8px);
+            z-index: -1;
         }
-        .envelope::before {
-            top: 0;
-            left: 0;
-            border-bottom: 50px solid #e74c3c;
-            border-left: 150px solid transparent;
-            border-right: 150px solid transparent;
-            transform: rotateX(0deg);
-        }
-        .envelope::after {
-            bottom: 0;
-            left: 0;
-            border-top: 50px solid #e74c3c;
-            border-left: 150px solid transparent;
-            border-right: 150px solid transparent;
-            transform: rotateX(0deg);
-        }
-        .envelope:hover::before {
-            transform: rotateX(-180deg);
-        }
-        .envelope:hover::after {
-            transform: rotateX(180deg);
-        }
-        .heart {
-            display: inline-block;
-            width: 60px;
-            aspect-ratio: 1;
-            border-image: radial-gradient(red 69%, #0000 70%) 84.5%/50%;
-            clip-path: polygon(-41% 0, 50% 91%, 141% 0);
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            cursor: pointer;
-        }
-        .message {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: #fff;
-            border-radius: 10px;
+
+        .container {
+            background: rgba(255, 255, 255, 0.9);
+            color: #333;
             padding: 20px;
+            border-radius: 20px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+            max-width: 400px;
+            width: 90%;
             box-sizing: border-box;
-            opacity: 0;
-            visibility: hidden;
-            transform: translateY(-20px);
-            transition: opacity 0.9s ease, transform 0.9s ease, visibility 0.9s;
-            overflow-y: auto;
+            text-align: center;
+            transition: all 0.3s ease;
+            margin-bottom: 60px; /* Space for footer */
+            max-height: 80vh; /* Set a max height for the container */
+            overflow-y: auto; /* Enable vertical scrolling */
         }
-        .message.visible {
-            opacity: 1;
-            visibility: visible;
-            transform: translateY(0);
+
+        .login-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            width: 100%;
         }
-        h1 {
-            color: #e74c3c;
-            font-size: 36px;
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
             margin-bottom: 20px;
-            font-family: 'Brush Script MT', cursive;
         }
-        p {
-            font-size: 18px;
-            line-height: 1.6;
-            font-family: 'Brush Script MT', cursive;
+
+        th, td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: left;
         }
-        .quote {
-            font-style: italic;
-            color: #555;
-            margin-top: 30px;
+
+        th {
+            background-color: #f4f4f4;
         }
+
+        tr:hover {
+            background-color: #f1f1f1;
+            cursor: pointer;
+        }
+
+        .actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .actions button {
+            display: inline-block;
+            margin: 2px;
+            padding: 5px 10px;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            cursor: pointer;
+            font-size: 0.8em;
+        }
+
+        .actions button.present {
+            background-color: green;
+        }
+
+        .actions button.absent {
+            background-color: red;
+        }
+
+        .actions button.late {
+            background-color: orange;
+        }
+
+        .actions button.revert {
+            background-color: gray;
+        }
+
+        .status-indicator {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .present { background-color: green; }
+        .absent { background-color: red; }
+        .late { background-color: orange; }
+        .not-checked { background-color: gray; }
+
         .footer {
-            margin-top: 40px;
-            font-size: 14px;
-            color: #888;
+            margin-top: 10px;
+            color: #333;
+            font-size: 0.8em;
+        }
+
+        .footer-links {
+            text-align: center;
+            margin-top: auto;
+            padding: 10px;
+        }
+
+        .footer-links a {
+            color: #4CAF50;
+            text-decoration: none;
+            margin: 0 10px;
+        }
+
+        .footer-links a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 10px;
+                font-size: 0.9em;
+            }
+
+            table, th, td {
+                font-size: 0.8em;
+            }
+
+            .actions button {
+                padding: 4px 8px;
+                font-size: 0.7em;
+            }
+
+            .footer-links a {
+                font-size: 0.8em;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="envelope" onclick="showMessage()">
-        <div class="heart"></div>
-        <div class="message" id="message">
-            <h1>I'm Sorry</h1>
-            <p>Dear Nate</p>
-            <p>Words cannot express how deeply sorry I am for making you cry. My actions were thoughtless and have caused you pain, which is the last thing I ever wanted to do. You mean the world to me, and it breaks my heart to see you hurt.</p>
-            <p>I've spent a lot of time reflecting on what happened, and I realize how much I've hurt you. I know that apologies can't undo the past, but I want you to know that I am committed to making things right. I am willing to do whatever it takes to earn your forgiveness and rebuild your trust.</p>
-            <p>Our relationship means everything to me, and I cherish every moment we spend together. Your smile, your laughter, and your love are the best parts of my life. I promise to be more understanding, more supportive, and more loving. Please, give me a chance to show you how much I care and how much you mean to me.</p>
-            <p>If you're willing, I would love to talk and work through this together. I believe in us, and I hope you do too.</p>
-            <p>With my love,</p>
-            <p>Zed</p>
-            <div class="quote">
-                <p>"The best relationships are the ones where you never give up on each other." - Unknown</p>
-            </div>
+    <div class="background-blur"></div>
+    <div class="login-container">
+        <div class="container" id="login-container">
+            <h2>Login</h2>
+            <form id="loginForm">
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username" required>
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" required>
+                <button type="submit">Login</button>
+            </form>
             <div class="footer">
-                <p>Every day is a new opportunity to make things better.</p>
+                ©Fort Bonifacio High School
             </div>
         </div>
     </div>
 
+    <div class="container" id="students-container" style="display: none;">
+        <h2>Attendance Tracker - Grade Xll Joey Gurango</h2>
+        <div id="male-section">
+            <h3>Male Students</h3>
+            <table id="maleTable">
+                <thead>
+                    <tr>
+                        <th>Student Name</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Kong kailangan e separate -->
+                </tbody>
+            </table>
+        </div>
+        <div id="female-section">
+            <h3>Female Students</h3>
+            <table id="femaleTable">
+                <thead>
+                    <tr>
+                        <th>Student Name</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Kong kailangan iseparatw -->
+                </tbody>
+            </table>
+        </div>
+        <button id="submitAttendance">Submit Attendance</button>
+    </div>
+
+    <div class="footer-links">
+        <a href="#privacy-policy">Privacy Policy</a> | 
+        <a href="#terms-of-service">Terms of Service</a>
+    </div>
+
     <script>
-        function showMessage() {
-            document.getElementById('message').classList.add('visible');
+        const users = [
+            {"username": "admin", "password": "1234"},
+            {"username": "teacher", "password": "5678"}
+        ];
+
+        const students = [
+            {"name": "Aian Vher Honorica ABENDAÑO", "gender": "Male"},
+            {"name": "Mackie Zamora BALANE", "gender": "Male"},
+            {"name": "Rayver Dane Sanoria BERMEJO", "gender": "Male"},
+            {"name": "Jv Villa DELA ROSA", "gender": "Male"},
+            {"name": "Rian Anthony Peligro ECHON", "gender": "Male"},
+            {"name": "Jhon Reynald Polinar EDILLOR", "gender": "Male"},
+            {"name": "Rojan Bermudo ESPIRITU", "gender": "Male"},
+            {"name": "Daniel Baleña FUNGO", "gender": "Male"},
+            {"name": "Raniel Villaflor GALLARDO", "gender": "Male"},
+            {"name": "John Aldrin GALLEGO", "gender": "Male"},
+            {"name": "John Rommel II Nuyad HERNANDEZ", "gender": "Male"},
+            {"name": "John Paul Nunez HERRERA", "gender": "Male"},
+            {"name": "Al Andrew Tadeo LACHICA", "gender": "Male"},
+            {"name": "Renzmar Zaragosa LEONEN", "gender": "Male"},
+            {"name": "Justin Dhey Castillo MAULION", "gender": "Male"},
+            {"name": "Sir Vincent Aquino MEDENILLA", "gender": "Male"},
+            {"name": "Simon Paul Tayag MORGA", "gender": "Male"},
+            {"name": "Zedric Lewis Intervision NOORA", "gender": "Male"},
+            {"name": "Oliver Jr Burce OBANG", "gender": "Male"},
+            {"name": "Marjon Bana PETILUNA", "gender": "Male"},
+            {"name": "Essun Yuki Gebone PISAN", "gender": "Male"},
+            {"name": "Kenneth James Piñafil ROMANO", "gender": "Male"},
+            {"name": "John Mark Francis Norte SULIT", "gender": "Male"},
+            {"name": "Zheadreck Mark Villa SUSANA", "gender": "Male"},
+            {"name": "Yzhan Martha Carizon AGUINALDO", "gender": "Female"},
+            {"name": "Erica Lina AQUINO", "gender": "Female"},
+            {"name": "Lyza Joy Santos CABASAL", "gender": "Female"},
+            {"name": "Yanah Remot DE HONOR",
+"gender": "Female"},     
+            {"name": "Marie Figuracion PONTANARES", "gender": "Female"},
+            {"name": "Aleah Cardaño ROSALES", "gender": "Female"},
+            {"name": "Jackquilene Tañan TIANGCO", "gender": "Female"}
+        ];
+
+        document.getElementById('loginForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            const user = users.find(u => u.username === username && u.password === password);
+            if (user) {
+                document.getElementById('login-container').style.display = 'none';
+                document.getElementById('students-container').style.display = 'block';
+                loadStudents();
+            } else {
+                alert('Invalid username or password');
+            }
+        });
+
+        function loadStudents() {
+            const maleTbody = document.querySelector('#maleTable tbody');
+            const femaleTbody = document.querySelector('#femaleTable tbody');
+
+            students.forEach(student => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${student.name}</td>
+                    <td>
+                        <div class="actions" style="display: none;">
+                            <button class="present" onclick="markAttendance(this, 'Present')">Present</button>
+                            <button class="absent" onclick="markAttendance(this, 'Absent')">Absent</button>
+                            <button class="late" onclick="markAttendance(this, 'Late')">Late</button>
+                            <button class="revert" onclick="revertAttendance(this)">Revert</button>
+                        </div>
+                        <span class="status-indicator not-checked"></span>
+                    </td>
+                `;
+
+                row.addEventListener('mouseenter', () => {
+                    row.querySelector('.actions').style.display = 'block';
+                });
+
+                row.addEventListener('mouseleave', () => {
+                    row.querySelector('.actions').style.display = 'none';
+                });
+
+                if (student.gender === 'Male') {
+                    maleTbody.appendChild(row);
+                } else {
+                    femaleTbody.appendChild(row);
+                }
+            });
         }
+
+        function markAttendance(button, status) {
+            const row = button.closest('tr');
+            row.setAttribute('data-status', status);
+
+            const statusIndicator = row.querySelector('.status-indicator');
+            statusIndicator.className = `status-indicator ${status.toLowerCase()}`;
+
+            if (status === 'Late') {
+                const timeLate = prompt('What time did the student arrive late?');
+                if (timeLate) {
+                    row.setAttribute('data-late-time', timeLate);
+                }
+            }
+
+            const buttons = row.querySelectorAll('.actions button');
+            buttons.forEach(btn => btn.disabled = true);
+        }
+
+        function revertAttendance(button) {
+            const row = button.closest('tr');
+            row.removeAttribute('data-status');
+            row.removeAttribute('data-late-time');
+
+            const statusIndicator = row.querySelector('.status-indicator');
+            statusIndicator.className = 'status-indicator not-checked';
+
+            const buttons = row.querySelectorAll('.actions button');
+            buttons.forEach(btn => {
+                if (btn.classList.contains('revert')) {
+                    btn.disabled = true; // Disable revert button itself
+                } else {
+                    btn.disabled = false; // Enable other buttons
+                }
+            });
+        }
+
+        document.getElementById('submitAttendance').addEventListener('click', () => {
+            const records = [];
+            const rows = document.querySelectorAll('#maleTable tbody tr, #femaleTable tbody tr');
+            rows.forEach(row => {
+                const name = row.children[0].textContent;
+                const status = row.getAttribute('data-status');
+                const timeLate = row.getAttribute('data-late-time') || '';
+                const date = new Date().toISOString().split('T')[0];
+                const time = new Date().toLocaleTimeString();
+
+                records.push({ name, status, timeLate, date, time });
+            });
+
+            // Log records to console (for demonstration purposes)
+            console.log(records);
+            alert('Attendance submitted');
+
+            // Simulate sending to Google Sheets         fetch('https://docs.google.com/spreadsheets/d/14bPTI5DBmyK95_b2DJ7DW7OxTYwazVs7GYn0sNqxRaA/edit?usp=drivesdk', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(records)
+            }).then(response => {
+                if (response.ok) {
+                    alert('Attendance submitted successfully');
+                } else {
+                    alert('Failed to submit attendance');
+                }
+            }).catch(error => {
+                console.error('Error:', error);
+                alert('Failed to submit attendance');
+            });
+        });
     </script>
 </body>
 </html>
